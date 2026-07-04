@@ -1374,6 +1374,7 @@
         </div>
     </div>
 
+    <script src="capacitor-exports.js"></script>
     <script>
         let db = JSON.parse(localStorage.getItem('tam_financial_v2')) || [];
         let historyStack = [];
@@ -2003,10 +2004,36 @@
         }
 
         // ── Capacitor-compatible Export ──
-        // Primary: Web Share API (native Android share sheet)
-        // Fallback: anchor-based download (works in browser/PWA)
+        // Primary: Capacitor Filesystem (saves to device Downloads folder)
+        // Fallback: Web Share API (native Android share sheet)
+        // Last resort: anchor-based download (works in browser/PWA)
+        async function saveToDownloads(blob, filename) {
+            if (window.__capFilesystem) {
+                try {
+                    const reader = new FileReader();
+                    const result = await new Promise((resolve, reject) => {
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(blob);
+                    });
+                    const base64 = result.split(',')[1];
+                    await window.__capFilesystem.writeFile({
+                        path: filename,
+                        data: base64,
+                        directory: window.__capDirectory.Downloads
+                    });
+                    showToast('✅ Saved to Downloads: ' + filename);
+                    return true;
+                } catch (err) {
+                    console.warn('Capacitor Filesystem failed, trying fallback:', err);
+                }
+            }
+            return false;
+        }
+
         async function triggerNativeShare(blob, filename, titleText) {
             if (db.length === 0) { showToast('⚠️ No data to export'); return; }
+            if (await saveToDownloads(blob, filename)) return;
             const file = new File([blob], filename, { type: blob.type });
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 try {
@@ -2018,13 +2045,10 @@
                     showToast('✅ Shared successfully!');
                 } catch (err) {
                     if (err.name !== 'AbortError') {
-                        // Share failed for a real reason — fall through to download
                         triggerAnchorDownload(blob, filename);
                     }
-                    // AbortError = user cancelled the share sheet — do nothing
                 }
             } else {
-                // Desktop browser or browser that doesn't support file sharing
                 triggerAnchorDownload(blob, filename);
             }
         }

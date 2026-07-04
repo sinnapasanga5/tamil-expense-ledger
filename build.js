@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const esbuild = require('esbuild');
 
 const src = path.join(__dirname, 'index.html');
 const destDir = path.join(__dirname, 'www');
@@ -15,3 +16,14 @@ try {
   console.error('Error during build:', err);
   process.exit(1);
 }
+
+esbuild.buildSync({
+  entryPoints: [path.join(__dirname, 'src', 'capacitor-exports.js')],
+  outfile: path.join(destDir, 'capacitor-exports.js'),
+  bundle: true,
+  format: 'iife',
+  minify: true,
+  platform: 'browser',
+  target: 'es2020',
+});
+console.log('Successfully bundled capacitor-exports.js');
