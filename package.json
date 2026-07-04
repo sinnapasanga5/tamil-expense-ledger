@@ -1,0 +1,17 @@
+{
+  "name": "tamil-expense-ledger",
+  "version": "1.0.0",
+  "description": "Advanced Tamil Expense Ledger App",
+  "main": "www/index.html",
+  "scripts": {
+    "build": "node build.js",
+    "sync": "npx cap sync"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.1.2"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2"
+  }
+}

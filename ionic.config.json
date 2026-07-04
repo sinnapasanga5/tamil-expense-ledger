@@ -1,0 +1,7 @@
+{
+  "name": "Tamil Ledger",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Advanced Tamil Expense Ecosystem</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --primary-rgb: 99, 102, 241;
+            --border: #334155;
+            --radius: 16px;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.3);
+            --glow: 0 0 20px rgba(var(--primary-rgb), 0.25);
+        }
+
+        [data-color-theme="emerald"] {
+            --primary: #34d399;
+            --primary-hover: #059669;
+            --primary-rgb: 52, 211, 153;
+        }
+
+        [data-color-theme="rose"] {
+            --primary: #fb7185;
+            --primary-hover: #f43f5e;
+            --primary-rgb: 251, 113, 133;
+        }
+
+        [data-color-theme="ocean"] {
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --primary-rgb: 56, 189, 248;
+        }
+
+        [data-color-theme="purple"] {
+            --primary: #a78bfa;
+            --primary-hover: #8b5cf6;
+            --primary-rgb: 167, 139, 250;
+        }
+
+        [data-color-theme="amber"] {
+            --primary: #fbbf24;
+            --primary-hover: #f59e0b;
+            --primary-rgb: 251, 191, 36;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Noto Sans Tamil', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-bottom: 90px;
+        }
+
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 14px 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            position: relative;
+            z-index: 20;
+            transition: var(--transition);
+        }
+
+        header:hover {
+            border-color: rgba(var(--primary-rgb), 0.3);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-right-cluster {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 17px;
+            background: linear-gradient(135deg, var(--primary) 0%, #a78bfa 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        .logo-area i {
+            -webkit-text-fill-color: initial;
+            color: var(--primary);
+            font-size: 22px;
+            filter: drop-shadow(0 0 6px rgba(var(--primary-rgb), 0.4));
+        }
+
+        .menu-wrapper {
+            position: relative;
+        }
+
+        .menu-drawer {
+            position: absolute;
+            right: 0;
+            top: 46px;
+            width: 280px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            animation: slideDown 0.2s ease;
+            transform-origin: top right;
+        }
+
+        .menu-drawer.active {
+            display: flex;
+            animation: drawerOpen 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes drawerOpen {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .drawer-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .drawer-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .drawer-row:hover {
+            border-color: rgba(var(--primary-rgb), 0.2);
+        }
+
+        .theme-color-selector {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+
+        .theme-color-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .theme-color-btn:hover {
+            transform: scale(1.25);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+        }
+
+        .theme-color-btn.active {
+            border-color: var(--text-main);
+            transform: scale(1.2);
+            box-shadow: 0 0 0 2px var(--card-bg), 0 0 0 4px var(--primary);
+        }
+
+        .sticky-wrap {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--bg-primary);
+            padding: 4px 0 8px 0;
+            margin: -4px 0 0 0;
+        }
+
+        .total-display-card {
+            background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.3) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border-radius: var(--radius);
+            padding: 16px;
+            border: 1px solid rgba(var(--primary-rgb), 0.35);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(var(--primary-rgb), 0.2);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .total-display-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(var(--primary-rgb), 0.06), transparent 60%);
+            animation: rotateGlow 8s linear infinite;
+        }
+
+        .total-display-card>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes rotateGlow {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .total-val {
+            font-size: 30px;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Period Timeframe Custom Navigation Tabs - Sliding Pill Style */
+        .timeframe-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: var(--card-bg);
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-top: 4px;
+            position: relative;
+        }
+
+        .timeframe-tabs::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            height: calc(100% - 8px);
+            width: calc(25% - 4px);
+            background: var(--primary);
+            border-radius: 8px;
+            transition: left 0.4s cubic-bezier(.88, -.35, .565, 1.35);
+            z-index: 0;
+            box-shadow: 0 2px 12px rgba(var(--primary-rgb), 0.3);
+        }
+
+        .timeframe-tabs.pos-0::after {
+            left: 4px;
+        }
+
+        .timeframe-tabs.pos-1::after {
+            left: calc(25% + 2px);
+        }
+
+        .timeframe-tabs.pos-2::after {
+            left: calc(50% + 2px);
+        }
+
+        .timeframe-tabs.pos-3::after {
+            left: calc(75% + 2px);
+        }
+
+        .time-tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 4px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 1;
+            position: relative;
+            transition: color 0.25s ease;
+        }
+
+        .time-tab-btn:hover {
+            color: var(--text-main);
+        }
+
+        .time-tab-btn.active {
+            color: white;
+        }
+
+        .custom-range-deck {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-top: 4px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .custom-range-deck.active {
+            display: grid;
+            animation: fadeIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .filter-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .filter-card:hover {
+            border-color: rgba(var(--primary-rgb), 0.3);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(var(--primary-rgb), 0.2);
+        }
+
+        .card-header {
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .mobile-item-card {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            animation: fadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: default;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        .mobile-item-card:hover {
+            transform: translateX(5px);
+            border-color: rgba(var(--primary-rgb), 0.4);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .mobile-item-card.selected {
+            border-color: var(--primary);
+            background: rgba(var(--primary-rgb), 0.12);
+            box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.3), var(--shadow-sm);
+            transform: translateX(5px);
+        }
+
+        .mobile-item-card.selected:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.5), var(--shadow-md);
+        }
+
+        .selection-mode .mobile-item-card .mobile-actions {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .mobile-row-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .mobile-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-main);
+            max-width: 70%;
+        }
+
+        .mobile-amt {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--danger);
+        }
+
+        .mobile-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .mobile-notes {
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 6px;
+            border-radius: 6px;
+            border-left: 2px solid var(--primary);
+        }
+
+        .mobile-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 4px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 8px;
+        }
+
+        .selection-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9998;
+            background: var(--card-bg);
+            border-top: 2px solid var(--primary);
+            padding: 10px 16px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
+            animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .selection-bar.active {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .sel-count {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+
+        .sel-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .batch-edit-grid {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .batch-edit-grid th {
+            background: rgba(var(--primary-rgb), 0.1);
+            color: var(--primary);
+            padding: 6px 4px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .batch-edit-grid td {
+            padding: 4px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .batch-edit-grid input,
+        .batch-edit-grid select {
+            width: 100%;
+            padding: 4px 6px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--bg);
+            color: var(--text-main);
+            font-size: 12px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        .batch-edit-grid input:focus,
+        .batch-edit-grid select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .batch-edit-grid input[type=date] {
+            min-width: 115px;
+        }
+
+        .batch-edit-grid .row-num {
+            color: var(--text-muted);
+            font-size: 10px;
+            text-align: center;
+            width: 24px;
+        }
+
+        .fab-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        body.selection-mode .fab-container {
+            display: none;
+        }
+
+        .fab-main {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .fab-main:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 6px 24px rgba(var(--primary-rgb), 0.6);
+        }
+
+        .fab-main:active {
+            transform: scale(0.95);
+        }
+
+        .fab-cluster {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .fab-container.active .fab-cluster {
+            display: flex;
+        }
+
+        .fab-container.active .fab-cluster .fab-sub {
+            animation: fabPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+
+        .fab-container.active .fab-cluster .fab-sub:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .fab-container.active .fab-cluster .fab-sub:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .fab-container.active .fab-cluster .fab-sub:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+
+        @keyframes fabPop {
+            from {
+                opacity: 0;
+                transform: scale(0.5) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .fab-sub {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .fab-sub:hover {
+            background: var(--primary-hover);
+            transform: scale(1.12) !important;
+            box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.5);
+        }
+
+        .fab-sub:active {
+            transform: scale(0.95) !important;
+        }
+
+        .fab-label {
+            position: absolute;
+            right: 56px;
+            background: #0f172a;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            border: 1px solid var(--border);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateX(5px);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .fab-sub:hover .fab-label {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            animation: modalFadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-sheet {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            animation: modalOpen 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes modalOpen {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .close-modal {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .close-modal:hover {
+            color: var(--danger);
+            transform: rotate(90deg) scale(1.2);
+        }
+
+        .segment-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--bg-primary);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 12px;
+        }
+
+        .segment-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .segment-btn:hover {
+            background: rgba(var(--primary-rgb), 0.1);
+            color: var(--text-main);
+        }
+
+        .segment-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .segment-btn.active:hover {
+            box-shadow: 0 4px 14px rgba(var(--primary-rgb), 0.4);
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+            transform: scale(1.01);
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 36px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0);
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .btn:hover::after {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn:active {
+            transform: translateY(0px) scale(0.96);
+        }
+
+        .btn-p {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px rgba(var(--primary-rgb), 0.3);
+        }
+
+        .btn-p:hover {
+            box-shadow: 0 6px 24px rgba(var(--primary-rgb), 0.45);
+        }
+
+        .btn-d {
+            background: var(--danger);
+            color: white;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-d:hover {
+            box-shadow: 0 6px 24px rgba(239, 68, 68, 0.45);
+        }
+
+        .btn-w {
+            background: var(--warning);
+            color: #121214;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-w:hover {
+            box-shadow: 0 6px 24px rgba(245, 158, 11, 0.45);
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-square {
+            width: 36px;
+            padding: 0;
+        }
+
+        .canvas-container {
+            width: 100%;
+            background: var(--bg-primary);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            transition: var(--transition);
+        }
+
+        .canvas-container:hover {
+            border-color: rgba(var(--primary-rgb), 0.4);
+        }
+
+        canvas {
+            display: block;
+            height: 140px;
+            touch-action: none;
+            cursor: crosshair;
+            width: 100%;
+        }
+
+        .word-chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            min-height: 36px;
+            padding: 6px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .word-chip {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .word-chip:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.06);
+            box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+        }
+
+        .uploader-zone {
+            border: 2px dashed var(--border);
+            padding: 24px 12px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.01);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .uploader-zone:hover {
+            border-color: var(--primary);
+            background: rgba(var(--primary-rgb), 0.05);
+            transform: scale(1.01);
+        }
+
+        .category-pill {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .form-action-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-5px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* ── Android-friendly Toast Notification ── */
+        #appToast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(30, 41, 59, 0.95);
+            color: #f8fafc;
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            z-index: 99999;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        #appToast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+
+<body onclick="handleGlobalClick(event)">
+
+    <!-- Android Toast Notification -->
+    <div id="appToast"></div>
+
+    <div class="app-container">
+        <header>
+            <div class="logo-area"><i class="fa-solid fa-wallet" style="color:var(--primary)"></i> Advanced Tamil Ledger
+            </div>
+            <div class="header-right-cluster">
+                <button class="btn btn-square"
+                    style="background:var(--card-bg); color:var(--text-main); border:1px solid var(--border);"
+                    onclick="triggerUndo()"><i class="fa-solid fa-arrow-rotate-left"></i></button>
+
+                <div class="menu-wrapper" id="menuWrapperSystem">
+                    <button class="btn btn-p btn-square" onclick="toggleMenuDrawer(event)"><i
+                            class="fa-solid fa-bars"></i></button>
+                    <div id="globalMenuDrawer" class="menu-drawer">
+                        <div class="drawer-row">
+                            <label><i class="fa-solid fa-language"></i> Application Language</label>
+                            <button class="btn"
+                                style="background:var(--bg-primary); color:var(--text-main); width:100%;"
+                                onclick="toggleLanguage()"><span id="ln-langBtn">EN</span></button>
+                        </div>
+                        <div class="drawer-row">
+                            <label><i class="fa-solid fa-palette"></i> Base Theme Tint</label>
+                            <div class="theme-color-selector">
+                                <button class="theme-color-btn" style="background:#6366f1;"
+                                    onclick="setColorTheme('indigo')"></button>
+                                <button class="theme-color-btn" style="background:#10b981;"
+                                    onclick="setColorTheme('emerald')"></button>
+                                <button class="theme-color-btn" style="background:#f43f5e;"
+                                    onclick="setColorTheme('rose')"></button>
+                                <button class="theme-color-btn" style="background:#0ea5e9;"
+                                    onclick="setColorTheme('ocean')"></button>
+                                <button class="theme-color-btn" style="background:#a855f7;"
+                                    onclick="setColorTheme('purple')"></button>
+                                <button class="theme-color-btn" style="background:#f59e0b;"
+                                    onclick="setColorTheme('amber')"></button>
+                            </div>
+                        </div>
+                        <div class="drawer-row">
+                            <label><i class="fa-solid fa-key"></i> Gemini API Key</label>
+                            <input type="password" id="manualApiKeyField" placeholder="Enter API Key..."
+                                onchange="persistManualApiKey(this)">
+                        </div>
+                        <div class="drawer-row">
+                            <label><i class="fa-solid fa-share-nodes"></i> <span id="ln-lbl-export">Export / Share Data</span></label>
+                            <div style="display:flex; gap:8px; margin-top:4px;">
+                                <button class="btn btn-p" style="flex:1;" onclick="exportJSON()">
+                                    <i class="fa-solid fa-file-code"></i>
+                                    <span id="ln-btn-json">JSON</span>
+                                </button>
+                                <button class="btn btn-p" style="flex:1;" onclick="exportCSV()">
+                                    <i class="fa-solid fa-table"></i>
+                                    <span id="ln-btn-csv">CSV</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="drawer-row">
+                            <label><i class="fa-solid fa-file-import"></i> <span id="ln-lbl-import">Import Backup</span></label>
+                            <button class="btn btn-secondary" style="width:100%; margin-top:4px; font-size:12px;"
+                                onclick="document.getElementById('importFileControl').click()">
+                                <i class="fa-solid fa-folder-open"></i>
+                                <span id="ln-btn-import">Choose JSON File</span>
+                            </button>
+                            <input type="file" id="importFileControl" accept=".json" style="display:none;"
+                                onchange="importJSON(this)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="sticky-wrap">
+            <div class="total-display-card">
+                <div id="ln-lbl-total" style="font-size:12px; opacity:0.85; font-weight:600;">Total Aggregated Exposure
+                    Summary</div>
+                <div class="total-val" id="renderTotalVolume">₹ 0.00</div>
+
+                <div class="timeframe-tabs pos-0">
+                    <button id="time-tab-all" class="time-tab-btn active" onclick="setTimeframeFilter('ALL')"><span
+                            id="ln-time-all">All Time</span></button>
+                    <button id="time-tab-month" class="time-tab-btn" onclick="setTimeframeFilter('MONTH')"><span
+                            id="ln-time-month">Monthly</span></button>
+                    <button id="time-tab-year" class="time-tab-btn" onclick="setTimeframeFilter('YEAR')"><span
+                            id="ln-time-year">Yearly</span></button>
+                    <button id="time-tab-custom" class="time-tab-btn" onclick="setTimeframeFilter('CUSTOM')"><span
+                            id="ln-time-custom">Custom Range</span></button>
+                </div>
+            </div>
+
+            <div class="custom-range-deck" id="customRangeDeck">
+                <div>
+                    <label style="font-size:10px;"><span id="ln-range-from">From</span></label>
+                    <input type="date" id="rangeDateFrom" onchange="commitStateRender()"
+                        style="padding:6px; font-size:12px;">
+                </div>
+                <div>
+                    <label style="font-size:10px;"><span id="ln-range-to">To</span></label>
+                    <input type="date" id="rangeDateTo" onchange="commitStateRender()"
+                        style="padding:6px; font-size:12px;">
+                </div>
+            </div>
+            <div class="custom-range-deck" id="monthPickerDeck">
+                <div style="grid-column: span 2;">
+                    <label style="font-size:10px;"><span id="ln-lbl-month">Select Month</span></label>
+                    <input type="month" id="monthPicker" onchange="commitStateRender()"
+                        style="padding:6px; font-size:12px;">
+                </div>
+            </div>
+            <div class="custom-range-deck" id="yearPickerDeck">
+                <div style="grid-column: span 2;">
+                    <label style="font-size:10px;"><span id="ln-lbl-year">Select Year</span></label>
+                    <input type="number" id="yearPicker" min="2000" max="2099" step="1" onchange="commitStateRender()"
+                        style="padding:6px; font-size:12px;">
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-card">
+            <input type="text" id="tableSearchQuery" placeholder="Search..." oninput="commitStateRender()">
+            <div class="filter-row">
+                <select id="tableCategoryFilter" onchange="commitStateRender()"></select>
+                <select id="tableChronoSort" onchange="commitStateRender()"></select>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" id="ln-h-table"><i class="fa-solid fa-list-check"></i> Transaction Database History
+                Log</div>
+            <div id="mobileListContainer" style="display:flex; flex-direction:column; gap:10px;"></div>
+        </div>
+    </div>
+
+    <div id="selectionBar" class="selection-bar">
+        <span id="selCount" class="sel-count">0 selected</span>
+        <div class="sel-actions">
+            <button class="btn btn-w" style="height:32px; font-size:12px;" onclick="batchEditSelected()"><i
+                    class="fa-solid fa-pen"></i> <span id="ln-sel-edit">Edit</span></button>
+            <button class="btn btn-d" style="height:32px; font-size:12px;" onclick="confirmBatchDelete()"><i
+                    class="fa-solid fa-trash"></i> <span id="ln-sel-delete">Delete</span></button>
+            <button class="btn btn-secondary" style="height:32px; font-size:12px;" onclick="clearSelection()"><i
+                    class="fa-solid fa-xmark"></i> <span id="ln-sel-cancel">Cancel</span></button>
+        </div>
+    </div>
+
+    <div class="fab-container" id="interactiveFabContainer">
+        <div class="fab-cluster">
+            <button class="fab-sub" onclick="openModalSheet('aiVisionModal')"><i class="fa-solid fa-brain"></i><span
+                    class="fab-label" id="ln-fab-ai">AI Scanner</span></button>
+            <button class="fab-sub" onclick="openModalSheet('canvasModal')"><i class="fa-solid fa-pen-nib"></i><span
+                    class="fab-label" id="ln-fab-canvas">Handwriting Pad</span></button>
+            <button class="fab-sub" onclick="openModalSheet('manualEntryModal')"><i
+                    class="fa-solid fa-keyboard"></i><span class="fab-label" id="ln-fab-manual">Manual
+                    Entry</span></button>
+        </div>
+        <button class="fab-main" id="fabPrimaryTrigger" onclick="toggleFabMenu(event)"><i
+                class="fa-solid fa-plus"></i></button>
+    </div>
+
+    <div id="aiVisionModal" class="modal-overlay" onclick="closeModalOnOuterClick(event, 'aiVisionModal')">
+        <div class="modal-sheet">
+            <div class="modal-top">
+                <h3 id="ln-h-ocr">AI Handwriting Scanner</h3>
+                <button class="close-modal" onclick="closeModalSheet('aiVisionModal')"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="uploader-zone" onclick="document.getElementById('ocrFileControl').click()">
+                <i class="fa-solid fa-wand-magic-sparkles"
+                    style="font-size:24px; color:var(--primary); margin-bottom:8px; display:block;"></i>
+                <span id="ln-ocr-prompt">Upload Sheet Image</span>
+                <input type="file" id="ocrFileControl" accept="image/*" style="display:none;"
+                    onchange="executeAiVisionProcessing(this)">
+            </div>
+            <div id="ocrStatusMsg"
+                style="font-size:12px; font-weight:600; color:var(--primary); margin-top:8px; min-height:18px;"></div>
+        </div>
+    </div>
+
+    <div id="canvasModal" class="modal-overlay" onclick="closeModalOnOuterClick(event, 'canvasModal')">
+        <div class="modal-sheet">
+            <div class="modal-top">
+                <h3 id="ln-h-canvas">Intelligent Ink Workspace</h3>
+                <button class="close-modal" onclick="closeModalSheet('canvasModal')"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="segment-bar">
+                <button id="tgt-desc" class="segment-btn active" onclick="setCanvasRoutingTarget('desc')"><span
+                        id="ln-canvas-seg-desc">Item Description</span></button>
+                <button id="tgt-notes" class="segment-btn" onclick="setCanvasRoutingTarget('notes')"><span
+                        id="ln-canvas-seg-notes">Additional Notes</span></button>
+            </div>
+            <div class="canvas-container">
+                <canvas id="writeCanvas"></canvas>
+                <div style="display:flex; justify-content:space-between; padding:6px; background:var(--card-bg);">
+                    <button class="btn btn-d" style="height:26px; padding:0 8px; font-size:11px;"
+                        onclick="clearWritingCanvas()"><i class="fa-solid fa-eraser"></i> <span
+                            id="ln-canvas-clear">Clear</span></button>
+                    <span id="recognition-status" style="font-size:12px; color:var(--primary); font-weight:600;"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label id="ln-lbl-shelf">Recognized Word Options</label>
+                <div id="wordTargetShelf" class="word-chips-container"></div>
+            </div>
+            <button class="btn btn-p" style="width:100%; margin-top:4px;" onclick="switchFromCanvasToManual()"><i
+                    class="fa-solid fa-arrow-right"></i> <span id="ln-canvas-proceed">Proceed to Form
+                    Entry</span></button>
+        </div>
+    </div>
+
+    <div id="manualEntryModal" class="modal-overlay" onclick="closeModalOnOuterClick(event, 'manualEntryModal')">
+        <div class="modal-sheet">
+            <div class="modal-top">
+                <h3 id="ln-h-form">Expense Registry Statement</h3>
+                <button class="close-modal" onclick="resetAndCloseForm()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="ledgerMainForm" onsubmit="commitFormEntry(event)">
+                <input type="hidden" id="edit_index" value="-1">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                    <div class="form-group">
+                        <label id="ln-lbl-date">Date</label>
+                        <input type="date" id="field_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label id="ln-lbl-cat">Category</label>
+                        <select id="field_category"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="ln-lbl-desc">Item Description</label>
+                    <input type="text" id="field_itemName" placeholder="..." required>
+                </div>
+                <div class="form-group">
+                    <label id="ln-lbl-amt">Amount</label>
+                    <input type="number" step="0.01" id="field_amount" placeholder="0.00" required>
+                </div>
+                <div class="form-group">
+                    <label id="ln-lbl-note">Notes</label>
+                    <input type="text" id="field_notes" placeholder="...">
+                </div>
+                <div class="form-action-row">
+                    <button type="button" class="btn btn-secondary" id="ln-btn-cancel" onclick="resetAndCloseForm()"><i
+                            class="fa-solid fa-ban"></i> Cancel</button>
+                    <button type="submit" class="btn btn-p" id="ln-btn-submit"><i class="fa-solid fa-floppy-disk"></i>
+                        Save Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="appConfirmModal" class="modal-overlay" onclick="closeModalOnOuterClick(event, 'appConfirmModal')">
+        <div class="modal-sheet" style="max-width:360px;">
+            <div class="modal-top" style="border-bottom:none; margin-bottom:8px;">
+                <h3 id="confirmModalTitle">Verification Required</h3>
+            </div>
+            <p id="confirmModalBody"
+                style="font-size:14px; color:var(--text-main); margin-bottom:18px; line-height:1.4;"></p>
+            <div class="form-action-row">
+                <button class="btn btn-secondary" id="confirmCancelBtn"
+                    onclick="handleConfirmationResponse(false)"><span id="ln-confirm-no">No</span></button>
+                <button class="btn btn-d" id="confirmProceedBtn" onclick="handleConfirmationResponse(true)"><span
+                        id="ln-confirm-yes">Yes, Delete</span></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="batchEditModal" class="modal-overlay" onclick="closeModalOnOuterClick(event, 'batchEditModal')">
+        <div class="modal-sheet" style="max-width:600px;">
+            <div class="modal-top">
+                <h3 id="ln-h-batch-edit">Batch Edit</h3>
+                <button class="close-modal" onclick="closeModalSheet('batchEditModal')">&times;</button>
+            </div>
+            <div id="batchEditBody" style="max-height:60vh; overflow-y:auto; margin:12px 0;"></div>
+            <div class="form-action-row">
+                <button class="btn btn-secondary" onclick="closeModalSheet('batchEditModal'); clearSelection();"><span
+                        id="ln-batch-cancel">Cancel</span></button>
+                <button class="btn btn-p" onclick="saveBatchEdit()"><i class="fa-solid fa-save"></i> <span
+                        id="ln-batch-save">Save Changes</span></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let db = JSON.parse(localStorage.getItem('tam_financial_v2')) || [];
+        let historyStack = [];
+        let currentLang = localStorage.getItem('app_lang') || 'TA';
+        let canvasRoutingTarget = 'desc';
+        let pendingConfirmationAction = null;
+        let currentTimeframe = 'ALL'; // Tracker for time range metrics
+        let selectedIndices = new Set();
+        let selectionMode = false;
+        let longPressTimer = null;
+
+        document.getElementById('field_date').valueAsDate = new Date();
+        document.getElementById('manualApiKeyField').value = localStorage.getItem('gemini_key') || '';
+
+        // Default custom dates to current month
+        const now = new Date();
+        document.getElementById('rangeDateFrom').value = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
+        document.getElementById('rangeDateTo').value = now.toISOString().slice(0, 10);
+        document.getElementById('monthPicker').value = now.toISOString().slice(0, 7);
+        document.getElementById('yearPicker').value = now.getFullYear();
+
+        function persistManualApiKey(el) { localStorage.setItem('gemini_key', el.value.trim()); }
+
+        function toggleFabMenu(e) {
+            if (e) e.stopPropagation();
+            const container = document.getElementById('interactiveFabContainer');
+            const mainBtnIcon = document.querySelector('#fabPrimaryTrigger i');
+            container.classList.toggle('active');
+            if (container.classList.contains('active')) {
+                mainBtnIcon.className = "fa-solid fa-xmark";
+            } else {
+                mainBtnIcon.className = "fa-solid fa-plus";
+            }
+        }
+
+        function closeFabMenu() {
+            document.getElementById('interactiveFabContainer').classList.remove('active');
+            document.querySelector('#fabPrimaryTrigger i').className = "fa-solid fa-plus";
+        }
+
+        function toggleMenuDrawer(e) {
+            if (e) e.stopPropagation();
+            document.getElementById('globalMenuDrawer').classList.toggle('active');
+        }
+
+        function handleGlobalClick(e) {
+            if (!document.getElementById('menuWrapperSystem').contains(e.target)) {
+                document.getElementById('globalMenuDrawer').classList.remove('active');
+            }
+            if (!document.getElementById('interactiveFabContainer').contains(e.target)) {
+                closeFabMenu();
+            }
+        }
+
+        function openModalSheet(id) {
+            document.getElementById(id).classList.add('active');
+            if (id === 'canvasModal') { setTimeout(initCanvasResolution, 200); }
+            closeFabMenu();
+        }
+        function closeModalSheet(id) { document.getElementById(id).classList.remove('active'); }
+        function closeModalOnOuterClick(e, id) { if (e.target.id === id) closeModalSheet(id); }
+
+        function setCanvasRoutingTarget(tgt) {
+            canvasRoutingTarget = tgt;
+            document.getElementById('tgt-desc').classList.toggle('active', tgt === 'desc');
+            document.getElementById('tgt-notes').classList.toggle('active', tgt === 'notes');
+        }
+
+        function switchFromCanvasToManual() { closeModalSheet('canvasModal'); openModalSheet('manualEntryModal'); }
+
+        const savedColorTheme = localStorage.getItem('app_color_theme') || 'indigo';
+        document.documentElement.setAttribute('data-color-theme', savedColorTheme);
+        function setColorTheme(color) {
+            document.documentElement.setAttribute('data-color-theme', color);
+            localStorage.setItem('app_color_theme', color);
+        }
+
+        function setTimeframeFilter(tf) {
+            currentTimeframe = tf;
+            const tabs = document.querySelectorAll('.time-tab-btn');
+            const idx = Array.from(tabs).findIndex(b => b.id === `time-tab-${tf.toLowerCase()}`);
+            document.querySelector('.timeframe-tabs').className = `timeframe-tabs pos-${idx}`;
+            tabs.forEach(b => b.classList.remove('active'));
+            document.getElementById(`time-tab-${tf.toLowerCase()}`).classList.add('active');
+
+            document.getElementById('customRangeDeck').classList.toggle('active', tf === 'CUSTOM');
+            document.getElementById('monthPickerDeck').classList.toggle('active', tf === 'MONTH');
+            document.getElementById('yearPickerDeck').classList.toggle('active', tf === 'YEAR');
+            commitStateRender();
+        }
+
+        function normalizeDatabaseCategories() {
+            db.forEach(item => {
+                const cat = (item.category || '').toString().toLowerCase();
+                if (cat.includes('food') || cat.includes('உணவு')) item.category = 'food';
+                else if (cat.includes('travel') || cat.includes('பயணம்')) item.category = 'travel';
+                else if (cat.includes('bills') || cat.includes('கட்டணம்')) item.category = 'bills';
+                else item.category = 'others';
+            });
+        }
+
+        const langPack = {
+            TA: {
+                langBtn: "ENG", h_ocr: "ஏஐ ஸ்கேனர்", ocr_prompt: "புகைப்படத்தைப் பதிவேற்றவும்",
+                h_canvas: "கையெழுத்து பலகை", lbl_shelf: "கண்டறியப்பட்ட மாற்று வார்த்தைகள்",
+                h_form: "செலவு விவரப் படிவம்", lbl_date: "தேதி", lbl_cat: "வகை", lbl_desc: "பொருள் விவரம்", lbl_amt: "தொகை", lbl_note: "கூடுதல் குறிப்பு",
+                btn_submit: "தரவைச் சேமி", btn_update: "மாற்றங்களைச் சேமி", btn_cancel: "ரத்துசெய்", lbl_total: "மொத்த செலவுத் தொகை", h_table: "செலவு வரலாற்றுப் பதிவேடு",
+                empty_log: "பதிவுகள் எதுவும் இல்லை.", no_matches: "பொருத்தங்கள் இல்லை.",
+                fab_ai: "ஏஐ ஸ்கேனர்", fab_canvas: "கையெழுத்து பலகை", fab_manual: "கைமுறை உள்ளீடு",
+                confirm_del_title: "பதிவை நீக்கவா?", confirm_del_body: "இந்த செலவு விவரப் பதிவை நிரந்தரமாக நீக்க விரும்புகிறீர்களா?",
+                confirm_del_multi_title: "தேர்ந்தெடுத்த பதிவுகளை நீக்கவா?", confirm_del_multi_body: "தேர்ந்தெடுத்த {count} பதிவுகளை நிரந்தரமாக நீக்க விரும்புகிறீர்களா?",
+                confirm_yes: "ஆம், நீக்கு", confirm_no: "இல்லை",
+                time_all: "அனைத்து நேரம்", time_month: "மாதாந்திர", time_year: "வருடாந்திர", time_custom: "தனிப்பயன் வரம்பு",
+                search_placeholder: "பெயர் அல்லது விவரம் மூலம் தேடுக...",
+                cat_all: "அனைத்து வகைகள்", sort_latest: "புதியவை முதலில்", sort_oldest: "பழையவை முதலில்",
+                lbl_month: "மாதத்தைத் தேர்ந்தெடுக்கவும்", lbl_year: "வருடத்தைத் தேர்ந்தெடுக்கவும்",
+                canvas_seg_desc: "பொருள் விவரம்", canvas_seg_notes: "கூடுதல் குறிப்பு",
+                canvas_clear: "அழி", canvas_proceed: "படிவத்திற்குச் செல்",
+                sel_count: "{count} தேர்ந்தெடுக்கப்பட்டது", sel_edit: "தொகு", sel_delete: "நீக்கு", sel_cancel: "ரத்துசெய்",
+                cats: { food: "உணவு (Food)", travel: "பயணம் (Travel)", bills: "கட்டணங்கள் (Bills)", others: "இதர செலவுகள் (Others)" }
+            },
+            EN: {
+                langBtn: "தமிழ்", h_ocr: "AI Image Scanner", ocr_prompt: "Upload Log Photo File",
+                h_canvas: "Intelligent Ink Pad", lbl_shelf: "Recognized Alternatives Stack",
+                h_form: "Expense Statement Entry", lbl_date: "Date", lbl_cat: "Category", lbl_desc: "Item Description", lbl_amt: "Amount", lbl_note: "Notes",
+                btn_submit: "Save Entry Line", btn_update: "Update Entry Line", btn_cancel: "Cancel", lbl_total: "Total Aggregated Exposure Summary", h_table: "Transaction Database History Log",
+                empty_log: "Empty entry database log.", no_matches: "No matches discovered.",
+                fab_ai: "AI Vision Scanner", fab_canvas: "Handwriting Pad", fab_manual: "Manual Entry Form",
+                confirm_del_title: "Drop Record Line?", confirm_del_body: "Are you sure you want to drop this ledger statement entry item permanently?",
+                confirm_del_multi_title: "Delete Selected Records?", confirm_del_multi_body: "Are you sure you want to permanently delete {count} selected records?",
+                confirm_yes: "Yes, Delete", confirm_no: "No",
+                time_all: "All Time", time_month: "Monthly", time_year: "Yearly", time_custom: "Custom Range",
+                search_placeholder: "Search by name or description...",
+                cat_all: "All Categories", sort_latest: "Latest First", sort_oldest: "Oldest First",
+                lbl_month: "Select Month", lbl_year: "Select Year",
+                canvas_seg_desc: "Item Description", canvas_seg_notes: "Additional Notes",
+                canvas_clear: "Clear", canvas_proceed: "Proceed to Form Entry",
+                sel_count: "{count} selected", sel_edit: "Edit", sel_delete: "Delete", sel_cancel: "Cancel",
+                cats: { food: "Food", travel: "Travel", bills: "Bills", others: "Others" }
+            }
+        };
+
+        function renderLanguageMarkup() {
+            const pack = langPack[currentLang];
+            document.getElementById('ln-langBtn').innerText = pack.langBtn;
+            document.getElementById('ln-h-ocr').innerText = pack.h_ocr;
+            document.getElementById('ln-ocr-prompt').innerText = pack.ocr_prompt;
+            document.getElementById('ln-h-canvas').innerText = pack.h_canvas;
+            document.getElementById('ln-lbl-shelf').innerText = pack.lbl_shelf;
+            document.getElementById('ln-canvas-seg-desc').innerText = pack.canvas_seg_desc;
+            document.getElementById('ln-canvas-seg-notes').innerText = pack.canvas_seg_notes;
+            document.getElementById('ln-canvas-clear').innerText = pack.canvas_clear;
+            document.getElementById('ln-canvas-proceed').innerText = pack.canvas_proceed;
+            document.getElementById('ln-h-form').innerText = pack.h_form;
+            document.getElementById('ln-lbl-date').innerText = pack.lbl_date;
+            document.getElementById('ln-lbl-cat').innerText = pack.lbl_cat;
+            document.getElementById('ln-lbl-desc').innerText = pack.lbl_desc;
+            document.getElementById('ln-lbl-amt').innerText = pack.lbl_amt;
+            document.getElementById('ln-lbl-note').innerText = pack.lbl_note;
+            document.getElementById('ln-fab-ai').innerText = pack.fab_ai;
+            document.getElementById('ln-fab-canvas').innerText = pack.fab_canvas;
+            document.getElementById('ln-fab-manual').innerText = pack.fab_manual;
+            document.getElementById('ln-btn-cancel').innerHTML = `<i class="fa-solid fa-ban"></i> ` + pack.btn_cancel;
+
+            const isEditing = document.getElementById('edit_index').value !== "-1";
+            document.getElementById('ln-btn-submit').innerHTML = isEditing ? `<i class="fa-solid fa-pen"></i> ` + pack.btn_update : `<i class="fa-solid fa-floppy-disk"></i> ` + pack.btn_submit;
+            document.getElementById('ln-lbl-total').innerText = pack.lbl_total;
+            document.getElementById('ln-h-table').innerHTML = `<i class="fa-solid fa-list-check"></i> ` + pack.h_table;
+
+            document.getElementById('ln-time-all').innerText = pack.time_all;
+            document.getElementById('ln-time-month').innerText = pack.time_month;
+            document.getElementById('ln-time-year').innerText = pack.time_year;
+            document.getElementById('ln-time-custom').innerText = pack.time_custom;
+            document.getElementById('ln-lbl-month').innerText = pack.lbl_month;
+            document.getElementById('ln-lbl-year').innerText = pack.lbl_year;
+            document.getElementById('ln-range-from').innerText = currentLang === 'TA' ? 'இருந்து' : 'From';
+            document.getElementById('ln-range-to').innerText = currentLang === 'TA' ? 'வரை' : 'To';
+
+            document.getElementById('ln-confirm-yes').innerText = pack.confirm_yes;
+            document.getElementById('ln-confirm-no').innerText = pack.confirm_no;
+            document.getElementById('ln-sel-edit').innerText = pack.sel_edit;
+            document.getElementById('ln-sel-delete').innerText = pack.sel_delete;
+            document.getElementById('ln-sel-cancel').innerText = pack.sel_cancel;
+
+            document.getElementById('tableSearchQuery').placeholder = pack.search_placeholder;
+
+            const catSelect = document.getElementById('tableCategoryFilter');
+            const cachedCat = catSelect.value;
+            catSelect.innerHTML = '';
+            let allOpt = document.createElement('option'); allOpt.value = 'ALL'; allOpt.innerText = pack.cat_all; catSelect.appendChild(allOpt);
+            for (const [key, val] of Object.entries(pack.cats)) {
+                let opt = document.createElement('option'); opt.value = key; opt.innerText = val; catSelect.appendChild(opt);
+            }
+            if (cachedCat) catSelect.value = cachedCat;
+
+            const sortSelect = document.getElementById('tableChronoSort');
+            const cachedSort = sortSelect.value;
+            sortSelect.innerHTML = '';
+            let latOpt = document.createElement('option'); latOpt.value = 'LATEST'; latOpt.innerText = pack.sort_latest; sortSelect.appendChild(latOpt);
+            let oldOpt = document.createElement('option'); oldOpt.value = 'OLDEST'; oldOpt.innerText = pack.sort_oldest; sortSelect.appendChild(oldOpt);
+            if (cachedSort) sortSelect.value = cachedSort;
+
+            const selectEl = document.getElementById('field_category');
+            const cachedVal = selectEl.value; selectEl.innerHTML = '';
+            for (const [key, val] of Object.entries(pack.cats)) {
+                let opt = document.createElement('option'); opt.value = key; opt.innerText = val; selectEl.appendChild(opt);
+            }
+            if (cachedVal) selectEl.value = cachedVal;
+            localStorage.setItem('app_lang', currentLang);
+            commitStateRender();
+        }
+
+        function toggleLanguage() { currentLang = currentLang === 'TA' ? 'EN' : 'TA'; renderLanguageMarkup(); }
+
+        function askAppConfirmation(title, message, callback) {
+            document.getElementById('confirmModalTitle').innerText = title;
+            document.getElementById('confirmModalBody').innerText = message;
+            pendingConfirmationAction = callback;
+            openModalSheet('appConfirmModal');
+        }
+
+        function handleConfirmationResponse(approved) {
+            closeModalSheet('appConfirmModal');
+            if (approved && pendingConfirmationAction) {
+                pendingConfirmationAction();
+            }
+            pendingConfirmationAction = null;
+        }
+
+        function startLongPress(idx) {
+            longPressTimer = setTimeout(function () {
+                longPressTimer = null;
+                if (!selectionMode) {
+                    selectionMode = true;
+                    document.body.classList.add('selection-mode');
+                    selectedIndices.clear();
+                }
+                toggleSelection(idx);
+            }, 500);
+        }
+
+        function cancelLongPress() {
+            if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+        }
+
+        function toggleSelection(idx) {
+            if (!selectionMode) return;
+            if (selectedIndices.has(idx)) selectedIndices.delete(idx); else selectedIndices.add(idx);
+            updateSelectionUI();
+        }
+
+        function clearSelection() {
+            selectionMode = false;
+            document.body.classList.remove('selection-mode');
+            selectedIndices.clear();
+            document.getElementById('selectionBar').classList.remove('active');
+            commitStateRender();
+        }
+
+        function updateSelectionUI() {
+            var bar = document.getElementById('selectionBar');
+            var count = selectedIndices.size;
+            if (count > 0) {
+                document.getElementById('selCount').innerText = langPack[currentLang].sel_count.replace('{count}', count);
+                bar.classList.add('active');
+            } else {
+                bar.classList.remove('active');
+            }
+            commitStateRender();
+        }
+
+        function confirmBatchDelete() {
+            var pack = langPack[currentLang];
+            askAppConfirmation(
+                pack.confirm_del_multi_title,
+                pack.confirm_del_multi_body.replace('{count}', selectedIndices.size),
+                function () { deleteSelected(); }
+            );
+        }
+
+        function deleteSelected() {
+            var sorted = Array.from(selectedIndices).sort(function (a, b) { return b - a; });
+            sorted.forEach(function (idx) { db.splice(idx, 1); });
+            normalizeDatabaseCategories();
+            pushHistoryState();
+            clearSelection();
+        }
+
+        function batchEditSelected() {
+            openBatchEdit();
+        }
+
+        function openBatchEdit() {
+            var indices = Array.from(selectedIndices);
+            var pack = langPack[currentLang];
+            var cats = pack.cats;
+            var rows = '';
+            indices.forEach(function (idx, i) {
+                var item = db[idx];
+                var catOptions = '';
+                for (var key in cats) {
+                    catOptions += '<option value="' + key + '"' + (item.category === key ? ' selected' : '') + '>' + cats[key] + '</option>';
+                }
+                rows += '<tr data-idx="' + idx + '">' +
+                    '<td class="row-num">' + (i + 1) + '</td>' +
+                    '<td><input type="date" class="be-date" value="' + item.date + '"></td>' +
+                    '<td><input type="text" class="be-name" value="' + item.itemName.replace(/"/g, '&quot;') + '"></td>' +
+                    '<td><select class="be-cat">' + catOptions + '</select></td>' +
+                    '<td><input type="number" step="0.01" class="be-amt" value="' + item.amount + '"></td>' +
+                    '<td><input type="text" class="be-notes" value="' + (item.notes || '').replace(/"/g, '&quot;') + '"></td>' +
+                    '</tr>';
+            });
+            var table = '<table class="batch-edit-grid">' +
+                '<thead><tr><th>#</th><th>' + pack.lbl_date + '</th><th>' + pack.lbl_desc + '</th><th>' + pack.lbl_cat + '</th><th>' + pack.lbl_amt + '</th><th>' + pack.lbl_note + '</th></tr></thead>' +
+                '<tbody>' + rows + '</tbody></table>';
+            document.getElementById('batchEditBody').innerHTML = table;
+            document.getElementById('ln-h-batch-edit').innerText = pack.h_form + ' (' + indices.length + ')';
+            document.getElementById('ln-batch-save').innerText = pack.btn_submit;
+            document.getElementById('ln-batch-cancel').innerText = pack.btn_cancel;
+            openModalSheet('batchEditModal');
+            clearSelection();
+        }
+
+        function saveBatchEdit() {
+            var rows = document.querySelectorAll('#batchEditBody tr');
+            var changed = false;
+            rows.forEach(function (row) {
+                var idx = parseInt(row.getAttribute('data-idx'));
+                var item = db[idx];
+                var newDate = row.querySelector('.be-date').value;
+                var newName = row.querySelector('.be-name').value.trim();
+                var newCat = row.querySelector('.be-cat').value;
+                var newAmt = parseFloat(row.querySelector('.be-amt').value);
+                var newNotes = row.querySelector('.be-notes').value.trim();
+                if (newName && !isNaN(newAmt) && newAmt >= 0) {
+                    item.date = newDate || item.date;
+                    item.itemName = newName;
+                    item.category = newCat;
+                    item.amount = newAmt;
+                    item.notes = newNotes;
+                    changed = true;
+                }
+            });
+            if (changed) { pushHistoryState(); normalizeDatabaseCategories(); commitStateRender(); }
+            closeModalSheet('batchEditModal');
+        }
+
+        async function executeAiVisionProcessing(input) {
+            const file = input.files[0]; if (!file) return;
+            const apiKey = (localStorage.getItem('gemini_key') || '').trim();
+            const msg = document.getElementById('ocrStatusMsg');
+            if (!apiKey) { alert("Please provide a Gemini API Key within the settings configuration drawer."); return; }
+
+            msg.innerText = "Analyzing array formats via Gemini Flash...";
+            const reader = new FileReader();
+
+            reader.onerror = function (evt) {
+                alert("File reading error code: " + evt.target.error.code);
+                msg.innerText = "❌ Failed to read selected file.";
+            };
+
+            reader.onload = async () => {
+                try {
+                    const base64Data = reader.result.split(',')[1];
+                    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+
+                    // Fixed Explicit Non-Transliterating Structural System Instructions
+                    const systemPrompt = "Extract table records from this ledger image into clean JSON array plaintext output with keys: 'date' (YYYY-MM-DD), 'itemName', 'category' ('food','travel','bills','others'), 'amount' (numeric), 'notes'. CRITICAL RULE: Extract the handwritten descriptions EXACTLY in the language they are written. Do NOT convert or transliterate Tamil text to English letters (e.g., if written as 'மிளகு' preserve it exactly as 'மிளகு', do NOT output 'milagu'). Avoid enclosing backtick decorators.";
+
+                    const payload = { contents: [{ parts: [{ text: systemPrompt }, { inlineData: { mimeType: file.type, data: base64Data } }] }] };
+
+                    const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+
+                    if (!response.ok) {
+                        const errorLog = await response.text();
+                        throw new Error(`API returned status ${response.status}: ${errorLog}`);
+                    }
+
+                    const resData = await response.json();
+                    let rawAiString = resData.candidates[0].content.parts[0].text.trim().replace(/```json|```/g, "").trim();
+                    const parsedRecords = JSON.parse(rawAiString);
+                    pushHistoryState();
+                    parsedRecords.forEach(item => {
+                        db.push({ date: item.date || new Date().toISOString().slice(0, 10), itemName: item.itemName, category: item.category || 'others', amount: parseFloat(item.amount) || 0, notes: item.notes || "AI Vision Generated Line" });
+                    });
+                    normalizeDatabaseCategories(); msg.innerText = "✅ Parsed successfully!"; commitStateRender(); closeModalSheet('aiVisionModal');
+                } catch (err) {
+                    alert("AI Pipeline Error: " + err.message);
+                    msg.innerText = "❌ Parse pipeline variance occurred.";
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        const canvas = document.getElementById('writeCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false; let strokes = []; let currentStroke = null; let strokeStartTime = 0; let recognitionTimeout = null;
+
+        function initCanvasResolution() {
+            if (!canvas) return; const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width; canvas.height = 140;
+            ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#ffffff';
+        }
+
+        function getCanvasCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: Math.round((clientX - rect.left) * (canvas.width / rect.width)), y: Math.round((clientY - rect.top) * (canvas.height / rect.height)) };
+        }
+
+        function traceStart(e) {
+            isDrawing = true; if (e.touches) e.preventDefault();
+            if (strokes.length === 0) strokeStartTime = Date.now();
+            const coords = getCanvasCoordinates(e); ctx.beginPath(); ctx.moveTo(coords.x, coords.y);
+            currentStroke = { x: [coords.x], y: [coords.y], t: [Date.now() - strokeStartTime] };
+            if (recognitionTimeout) clearTimeout(recognitionTimeout);
+        }
+        function traceMove(e) {
+            if (!isDrawing) return; if (e.touches) e.preventDefault();
+            const coords = getCanvasCoordinates(e); ctx.lineTo(coords.x, coords.y); ctx.stroke();
+            currentStroke.x.push(coords.x); currentStroke.y.push(coords.y); currentStroke.t.push(Date.now() - strokeStartTime);
+        }
+        function traceEnd() { if (!isDrawing) return; isDrawing = false; strokes.push(currentStroke); recognitionTimeout = setTimeout(sendStrokesToIME, 600); }
+
+        canvas.addEventListener('mousedown', traceStart); canvas.addEventListener('mouseup', traceEnd); canvas.addEventListener('mousemove', traceMove);
+        canvas.addEventListener('touchstart', traceStart, { passive: false }); canvas.addEventListener('touchend', traceEnd, { passive: false }); canvas.addEventListener('touchmove', traceMove, { passive: false });
+
+        function clearWritingCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); strokes = []; document.getElementById('wordTargetShelf').innerHTML = ''; }
+
+        function injectQuickWord(word) {
+            if (canvasRoutingTarget === 'desc') {
+                document.getElementById('field_itemName').value = word;
+            } else {
+                document.getElementById('field_notes').value = word;
+            }
+        }
+
+        async function sendStrokesToIME() {
+            if (strokes.length === 0) return;
+            document.getElementById('recognition-status').innerText = "⏳";
+            let ink = []; strokes.forEach(s => { ink.push([s.x, s.y, s.t]); });
+            const payload = { "app_version": 0.4, "requests": [{ "writing_guide": { "writing_area_width": canvas.width, "writing_area_height": canvas.height }, "ink": ink, "language": currentLang === 'TA' ? "ta" : "en" }] };
+
+            try {
+                const response = await fetch('https://www.google.com/inputtools/request?ime=handwriting&app=mobilesearch&cs=1&oe=UTF-8', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const data = await response.json();
+                if (data && data[0] === "SUCCESS") {
+                    const words = data[1][0][1]; const shelf = document.getElementById('wordTargetShelf'); shelf.innerHTML = '';
+                    words.slice(0, 5).forEach(w => {
+                        const btn = document.createElement('button'); btn.className = 'word-chip'; btn.innerText = w;
+                        btn.onclick = () => { injectQuickWord(w); clearWritingCanvas(); };
+                        shelf.appendChild(btn);
+                    });
+                    document.getElementById('recognition-status').innerText = "✅";
+                }
+            } catch (err) { document.getElementById('recognition-status').innerText = "❌"; }
+        }
+
+        function pushHistoryState() { historyStack.push(JSON.stringify(db)); }
+        function triggerUndo() { if (historyStack.length === 0) return; db = JSON.parse(historyStack.pop()); commitStateRender(); }
+
+        function triggerRowEdit(originalIndex) {
+            const target = db[originalIndex];
+            document.getElementById('edit_index').value = originalIndex;
+            document.getElementById('field_date').value = target.date;
+            document.getElementById('field_itemName').value = target.itemName;
+            document.getElementById('field_category').value = target.category;
+            document.getElementById('field_amount').value = target.amount;
+            document.getElementById('field_notes').value = target.notes || '';
+            renderLanguageMarkup(); openModalSheet('manualEntryModal');
+        }
+
+        function resetAndCloseForm() {
+            document.getElementById('edit_index').value = "-1";
+            document.getElementById('field_itemName').value = '';
+            document.getElementById('field_amount').value = '';
+            document.getElementById('field_notes').value = '';
+            document.getElementById('field_date').valueAsDate = new Date();
+            closeModalSheet('manualEntryModal');
+            renderLanguageMarkup();
+        }
+
+        function commitFormEntry(e) {
+            e.preventDefault(); pushHistoryState();
+            const idx = parseInt(document.getElementById('edit_index').value);
+            const payload = {
+                date: document.getElementById('field_date').value, itemName: document.getElementById('field_itemName').value,
+                category: document.getElementById('field_category').value, amount: parseFloat(document.getElementById('field_amount').value),
+                notes: document.getElementById('field_notes').value
+            };
+            if (idx !== -1) { db[idx] = payload; } else { db.push(payload); }
+            resetAndCloseForm();
+        }
+
+        function dropRow(originalIndex) {
+            const pack = langPack[currentLang];
+            askAppConfirmation(pack.confirm_del_title, pack.confirm_del_body, () => {
+                pushHistoryState();
+                db.splice(originalIndex, 1);
+                commitStateRender();
+            });
+        }
+
+        function commitStateRender() {
+            const pack = langPack[currentLang];
+            const listContainer = document.getElementById('mobileListContainer');
+            const sumBox = document.getElementById('renderTotalVolume');
+
+            listContainer.innerHTML = '';
+            let cumulativeFilteredVolume = 0;
+
+            const searchQuery = document.getElementById('tableSearchQuery').value.toLowerCase().trim();
+            const categoryFilter = document.getElementById('tableCategoryFilter').value;
+            const chronoSortOrder = document.getElementById('tableChronoSort').value;
+
+            let lowerDateBound = null;
+            let upperDateBound = null;
+
+            if (currentTimeframe === 'MONTH') {
+                const monthVal = document.getElementById('monthPicker').value;
+                if (monthVal) {
+                    const [yr, mo] = monthVal.split('-').map(Number);
+                    lowerDateBound = new Date(yr, mo - 1, 1);
+                    upperDateBound = new Date(yr, mo, 0);
+                }
+            } else if (currentTimeframe === 'YEAR') {
+                const yearVal = parseInt(document.getElementById('yearPicker').value);
+                if (yearVal) {
+                    lowerDateBound = new Date(yearVal, 0, 1);
+                    upperDateBound = new Date(yearVal, 11, 31);
+                }
+            } else if (currentTimeframe === 'CUSTOM') {
+                const rawFrom = document.getElementById('rangeDateFrom').value;
+                const rawTo = document.getElementById('rangeDateTo').value;
+                if (rawFrom) lowerDateBound = new Date(rawFrom);
+                if (rawTo) upperDateBound = new Date(rawTo);
+            }
+
+            let indexedSource = db.map((item, originalIndex) => ({ ...item, originalIndex }));
+
+            let processingStack = indexedSource.filter(item => {
+                const matchesSearch = item.itemName.toLowerCase().includes(searchQuery) || (item.notes && item.notes.toLowerCase().includes(searchQuery));
+                const matchesCategory = (categoryFilter === 'ALL' || item.category === categoryFilter);
+
+                // Timeframe execution filtering logic
+                let matchesTimeframe = true;
+                if (lowerDateBound || upperDateBound) {
+                    const entryDate = new Date(item.date);
+                    // Reset times to preserve accurate daily calculation comparisons
+                    entryDate.setHours(0, 0, 0, 0);
+                    if (lowerDateBound) {
+                        let compFrom = new Date(lowerDateBound); compFrom.setHours(0, 0, 0, 0);
+                        if (entryDate < compFrom) matchesTimeframe = false;
+                    }
+                    if (upperDateBound) {
+                        let compTo = new Date(upperDateBound); compTo.setHours(0, 0, 0, 0);
+                        if (entryDate > compTo) matchesTimeframe = false;
+                    }
+                }
+
+                return matchesSearch && matchesCategory && matchesTimeframe;
+            });
+
+            if (chronoSortOrder === 'LATEST') {
+                processingStack.sort((a, b) => new Date(b.date) - new Date(a.date));
+            } else {
+                processingStack.sort((a, b) => new Date(a.date) - new Date(b.date));
+            }
+
+            if (processingStack.length === 0) {
+                listContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">${pack.empty_log}</div>`;
+                sumBox.innerText = "₹ 0.00";
+                return;
+            }
+
+            processingStack.forEach(item => {
+                cumulativeFilteredVolume += item.amount;
+
+                const card = document.createElement('div');
+                var isSelected = selectionMode && selectedIndices.has(item.originalIndex);
+                card.className = 'mobile-item-card' + (isSelected ? ' selected' : '');
+
+                let notesMarkup = item.notes ? `<div class="mobile-notes">${item.notes}</div>` : '';
+
+                card.innerHTML = `
+                    <div class="mobile-row-top">
+                        <div class="mobile-title">${item.itemName}</div>
+                        <div class="mobile-amt">₹ ${item.amount.toFixed(2)}</div>
+                    </div>
+                    <div class="mobile-meta">
+                        <span><i class="fa-solid fa-calendar-days"></i> ${item.date}</span>
+                        <span class="category-pill">${pack.cats[item.category] || item.category}</span>
+                    </div>
+                    ${notesMarkup}
+                    <div class="mobile-actions">
+                        <button class="btn btn-w btn-square" style="height:28px; width:28px; font-size:11px;" onclick="triggerRowEdit(${item.originalIndex})"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-d btn-square" style="height:28px; width:28px; font-size:11px;" onclick="dropRow(${item.originalIndex})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+
+                card.addEventListener('mousedown', function (e) { startLongPress(item.originalIndex); });
+                card.addEventListener('mouseup', cancelLongPress);
+                card.addEventListener('mouseleave', cancelLongPress);
+                card.addEventListener('touchstart', function (e) { startLongPress(item.originalIndex); }, { passive: true });
+                card.addEventListener('touchend', cancelLongPress);
+                card.addEventListener('touchmove', cancelLongPress);
+                card.addEventListener('click', function (e) {
+                    if (selectionMode) { e.stopPropagation(); toggleSelection(item.originalIndex); }
+                });
+
+                listContainer.appendChild(card);
+            });
+
+            sumBox.innerText = `₹ ${cumulativeFilteredVolume.toFixed(2)}`;
+            localStorage.setItem('tam_financial_v2', JSON.stringify(db));
+        }
+
+        // ── Toast Notification ──
+        let _toastTimer = null;
+        function showToast(msg, duration) {
+            const toast = document.getElementById('appToast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            if (_toastTimer) clearTimeout(_toastTimer);
+            _toastTimer = setTimeout(() => { toast.classList.remove('show'); }, duration || 2800);
+        }
+
+        // ── Capacitor-compatible Export ──
+        // Primary: Web Share API (native Android share sheet)
+        // Fallback: anchor-based download (works in browser/PWA)
+        async function triggerNativeShare(blob, filename, titleText) {
+            if (db.length === 0) { showToast('⚠️ No data to export'); return; }
+            const file = new File([blob], filename, { type: blob.type });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: titleText,
+                        text: 'Exported from Tamil Ledger'
+                    });
+                    showToast('✅ Shared successfully!');
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        // Share failed for a real reason — fall through to download
+                        triggerAnchorDownload(blob, filename);
+                    }
+                    // AbortError = user cancelled the share sheet — do nothing
+                }
+            } else {
+                // Desktop browser or browser that doesn't support file sharing
+                triggerAnchorDownload(blob, filename);
+            }
+        }
+
+        function triggerAnchorDownload(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 3000);
+            showToast('📥 Download started: ' + filename);
+        }
+
+        function exportJSON() {
+            const dateStr = new Date().toISOString().slice(0, 10);
+            const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
+            triggerNativeShare(blob, `Ledger_${dateStr}.json`, 'Ledger Backup (JSON)');
+        }
+
+        function exportCSV() {
+            const dateStr = new Date().toISOString().slice(0, 10);
+            const pack = langPack[currentLang];
+            let stream = `Date,Description,Category,Amount,Notes\n`;
+            db.forEach(r => {
+                const cat = pack.cats[r.category] || r.category;
+                stream += `"${r.date}","${r.itemName.replace(/"/g,'""')}","${cat}","${r.amount}","${(r.notes||'').replace(/"/g,'""')}"\n`;
+            });
+            const blob = new Blob(['\uFEFF' + stream], { type: 'text/csv;charset=utf-8;' });
+            triggerNativeShare(blob, `Ledger_${dateStr}.csv`, 'Ledger Spreadsheet (CSV)');
+        }
+
+        function importJSON(input) {
+            const file = input.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (Array.isArray(imported)) {
+                        pushHistoryState();
+                        imported.forEach(item => db.push(item));
+                        normalizeDatabaseCategories();
+                        commitStateRender();
+                        showToast('✅ Imported ' + imported.length + ' records!');
+                    } else {
+                        showToast('⚠️ Invalid backup format.');
+                    }
+                } catch (err) { showToast('❌ Could not read file.'); }
+            };
+            reader.readAsText(file);
+            input.value = '';
+        }
+
+        document.addEventListener("DOMContentLoaded", () => { renderLanguageMarkup(); setColorTheme(savedColorTheme); });
+    </script>
+</body>
+
+</html>
