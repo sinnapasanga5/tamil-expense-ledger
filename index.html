@@ -1699,7 +1699,7 @@
         }
 
         function saveBatchEdit() {
-            var rows = document.querySelectorAll('#batchEditBody tr');
+            var rows = document.querySelectorAll('#batchEditBody tbody tr');
             var changed = false;
             rows.forEach(function (row) {
                 var idx = parseInt(row.getAttribute('data-idx'));
@@ -2004,36 +2004,39 @@
         }
 
         // ── Capacitor-compatible Export ──
-        // Primary: Capacitor Filesystem (saves to device Downloads folder)
-        // Fallback: Web Share API (native Android share sheet)
+        // Primary: Native Capacitor Share (uses Cache directory and native share sheet)
+        // Fallback: Web Share API (native browser share sheet)
         // Last resort: anchor-based download (works in browser/PWA)
-        async function saveToDownloads(blob, filename) {
-            if (window.__capFilesystem) {
+        async function triggerNativeShare(blob, filename, titleText) {
+            if (db.length === 0) { showToast('⚠️ No data to export'); return; }
+
+            if (window.__capFilesystem && window.__capShare) {
                 try {
                     const reader = new FileReader();
-                    const result = await new Promise((resolve, reject) => {
-                        reader.onload = () => resolve(reader.result);
+                    const base64Data = await new Promise((resolve, reject) => {
+                        reader.onload = () => resolve(reader.result.split(',')[1]);
                         reader.onerror = reject;
                         reader.readAsDataURL(blob);
                     });
-                    const base64 = result.split(',')[1];
-                    await window.__capFilesystem.writeFile({
+
+                    // Save to Cache directory temporarily
+                    const writeResult = await window.__capFilesystem.writeFile({
                         path: filename,
-                        data: base64,
-                        directory: window.__capDirectory.Downloads
+                        data: base64Data,
+                        directory: window.__capDirectory.Cache
                     });
-                    showToast('✅ Saved to Downloads: ' + filename);
-                    return true;
+
+                    // Launch native share sheet with the file uri
+                    await window.__capShare.share({
+                        title: titleText,
+                        files: [writeResult.uri]
+                    });
+                    return;
                 } catch (err) {
-                    console.warn('Capacitor Filesystem failed, trying fallback:', err);
+                    console.warn('Native Capacitor share failed, falling back:', err);
                 }
             }
-            return false;
-        }
 
-        async function triggerNativeShare(blob, filename, titleText) {
-            if (db.length === 0) { showToast('⚠️ No data to export'); return; }
-            if (await saveToDownloads(blob, filename)) return;
             const file = new File([blob], filename, { type: blob.type });
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 try {
