@@ -215,11 +215,7 @@
             box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
         }
 
-        .theme-color-btn.active {
-            border-color: var(--text-main);
-            transform: scale(1.2);
-            box-shadow: 0 0 0 2px var(--card-bg), 0 0 0 4px var(--primary);
-        }
+
 
         .sticky-wrap {
             position: sticky;
@@ -1114,7 +1110,7 @@
 
     <div class="app-container">
         <header>
-            <div class="logo-area" style="display:flex; align-items:center; gap:8px;"><img src="assets/logo.png" alt="Logo" style="height:26px; width:26px; border-radius:6px; object-fit:cover; border:1px solid rgba(var(--primary-rgb), 0.5);"><span style="margin-top:1px;">Advanced Tamil Ledger</span>
+            <div class="logo-area" style="display:flex; align-items:center; gap:8px;"><span id="ln-app-title" style="margin-top:1px;">Advanced Tamil Ledger</span>
             </div>
             <div class="header-right-cluster">
                 <button class="btn btn-square"
@@ -1496,7 +1492,7 @@
 
         const langPack = {
             TA: {
-                langBtn: "ENG", h_ocr: "ஏஐ ஸ்கேனர்", ocr_prompt: "புகைப்படத்தைப் பதிவேற்றவும்",
+                langBtn: "ENG", app_title: "மேம்பட்ட தமிழ் பதிவேடு", h_ocr: "ஏஐ ஸ்கேனர்", ocr_prompt: "புகைப்படத்தைப் பதிவேற்றவும்",
                 h_canvas: "கையெழுத்து பலகை", lbl_shelf: "கண்டறியப்பட்ட மாற்று வார்த்தைகள்",
                 h_form: "செலவு விவரப் படிவம்", lbl_date: "தேதி", lbl_cat: "வகை", lbl_desc: "பொருள் விவரம்", lbl_amt: "தொகை", lbl_note: "கூடுதல் குறிப்பு",
                 btn_submit: "தரவைச் சேமி", btn_update: "மாற்றங்களைச் சேமி", btn_cancel: "ரத்துசெய்", lbl_total: "மொத்த செலவுத் தொகை", h_table: "செலவு வரலாற்றுப் பதிவேடு",
@@ -1515,7 +1511,7 @@
                 cats: { food: "உணவு (Food)", travel: "பயணம் (Travel)", bills: "கட்டணங்கள் (Bills)", others: "இதர செலவுகள் (Others)" }
             },
             EN: {
-                langBtn: "தமிழ்", h_ocr: "AI Image Scanner", ocr_prompt: "Upload Log Photo File",
+                langBtn: "தமிழ்", app_title: "Advanced Tamil Ledger", h_ocr: "AI Image Scanner", ocr_prompt: "Upload Log Photo File",
                 h_canvas: "Intelligent Ink Pad", lbl_shelf: "Recognized Alternatives Stack",
                 h_form: "Expense Statement Entry", lbl_date: "Date", lbl_cat: "Category", lbl_desc: "Item Description", lbl_amt: "Amount", lbl_note: "Notes",
                 btn_submit: "Save Entry Line", btn_update: "Update Entry Line", btn_cancel: "Cancel", lbl_total: "Total Aggregated Exposure Summary", h_table: "Transaction Database History Log",
@@ -1538,6 +1534,7 @@
         function renderLanguageMarkup() {
             const pack = langPack[currentLang];
             document.getElementById('ln-langBtn').innerText = pack.langBtn;
+            document.getElementById('ln-app-title').innerText = pack.app_title;
             document.getElementById('ln-h-ocr').innerText = pack.h_ocr;
             document.getElementById('ln-ocr-prompt').innerText = pack.ocr_prompt;
             document.getElementById('ln-h-canvas').innerText = pack.h_canvas;
